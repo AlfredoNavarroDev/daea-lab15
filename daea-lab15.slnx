@@ -3,4 +3,8 @@
   <Project Path="TattooStudio.Datos/TattooStudio.Datos.csproj" />
   <Project Path="TattooStudio.Entidades/TattooStudio.Entidades.csproj" />
   <Project Path="TattooStudio.Negocio/TattooStudio.Negocio.csproj" />
+  <Project Path="GatewayApi/GatewayApi.csproj" />
+  <Project Path="ClientesApi/ClientesApi.csproj" />
+  <Project Path="GatewayApi.Tests/GatewayApi.Tests.csproj" />
+  <Project Path="ClientesApi.Tests/ClientesApi.Tests.csproj" />
 </Solution>
