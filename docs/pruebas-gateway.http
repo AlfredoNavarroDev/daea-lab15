@@ -62,7 +62,7 @@ Content-Type: application/json
 }
 
 ### 8. POST tatuador CON token de rol distinto a Recepcionista -> 403
-### Antes de correr este paso: en SSMS, UPDATE Usuarios SET Rol = 'Tatuador' WHERE Correo = '{{correo}}',
+### Antes de correr este paso: en SSMS, UPDATE dbo.Usuario SET Rol = 'Tatuador' WHERE Correo = '{{correo}}',
 ### volver a hacer login (paso 2) para obtener un token con Rol=Tatuador, y pegarlo abajo.
 POST {{gateway}}/gateway/tatuadores
 Authorization: Bearer PEGAR_TOKEN_CON_ROL_TATUADOR

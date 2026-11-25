@@ -47,9 +47,21 @@ de conexion SQL Server solo en el de `TattooStudio.Api`.
 | `/gateway/citastatuaje{everything}` | POST,PUT,DELETE | `:5225/api/citastatuaje{everything}` | Si |
 | `/gateway/clientes{everything}` | GET | `:5260/api/clientes{everything}` | Si |
 
+`No` = el Gateway no exige token en esta ruta; los GET de
+tatuadores/citastatuaje igual requieren JWT porque `TattooStudio.Api` tiene
+`[Authorize]` a nivel de clase (heredado de S14).
+
 ## Pruebas
 
 Ver `docs/pruebas-gateway.http` para la matriz completa (200/201/204/401/403/404/502).
+
+Pruebas automatizadas con `dotnet test`:
+- `ClientesApi.Tests`: repositorio en memoria, controlador y comportamiento
+  JWT (401 sin token / 200 con token válido / 404 id inexistente).
+- `GatewayApi.Tests`: ruteo y autenticación del Gateway (401 sin token,
+  502 sin downstream). Correr con los servicios downstream apagados (al
+  menos sin nada escuchando en el puerto 5225) — si no, los tests que
+  esperan 502 pueden leerse como falla aunque el código esté bien.
 
 ## Despliegue
 
