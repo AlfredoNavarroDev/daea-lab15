@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <None Include="ocelot.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="ocelot.Production.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

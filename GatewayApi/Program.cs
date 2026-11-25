@@ -6,8 +6,9 @@ using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var ocelotFileName = builder.Environment.IsProduction() ? "ocelot.Production.json" : "ocelot.json";
 builder.Configuration.AddJsonFile(
-    Path.Combine(builder.Environment.ContentRootPath, "ocelot.json"),
+    Path.Combine(builder.Environment.ContentRootPath, ocelotFileName),
     optional: false,
     reloadOnChange: true);
 

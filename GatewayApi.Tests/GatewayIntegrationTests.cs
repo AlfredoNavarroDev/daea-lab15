@@ -17,6 +17,7 @@ public class GatewayIntegrationTests : IClassFixture<WebApplicationFactory<Progr
 
         _factory = factory.WithWebHostBuilder(builder =>
         {
+            builder.UseEnvironment("Development");
             builder.UseContentRoot(gatewayContentRoot);
             builder.ConfigureAppConfiguration((_, config) =>
             {
