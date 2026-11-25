@@ -556,7 +556,7 @@ Expected: PASS — 6 tests en total (3 de repositorio + 3 de integración), 0 fa
 ```json
 {
   "Jwt": {
-    "Clave": "TattooStudio-S14-Lab14-ClaveSecretaJwt-32Caracteres-Minimo",
+    "Clave": "REEMPLAZAR-CON-CLAVE-LOCAL-NO-COMMITEAR",
     "Emisor": "TattooStudio.Api",
     "Audiencia": "TattooStudio.Clientes",
     "MinutosExpiracion": "60"
@@ -764,7 +764,7 @@ public partial class Program { }
 ```json
 {
   "Jwt": {
-    "Clave": "TattooStudio-S14-Lab14-ClaveSecretaJwt-32Caracteres-Minimo",
+    "Clave": "REEMPLAZAR-CON-CLAVE-LOCAL-NO-COMMITEAR",
     "Emisor": "TattooStudio.Api",
     "Audiencia": "TattooStudio.Clientes",
     "MinutosExpiracion": "60"
