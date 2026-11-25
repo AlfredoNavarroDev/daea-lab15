@@ -1,0 +1,90 @@
+@gateway = http://localhost:5050
+@correo = cliente.prueba@example.com
+@clave = ClaveSegura123
+
+### 1. Registro (publico) -> 201
+POST {{gateway}}/gateway/auth/registro
+Content-Type: application/json
+
+{
+  "correo": "{{correo}}",
+  "clave": "{{clave}}"
+}
+
+### 2. Login (publico) -> 200, copiar el "token" de la respuesta para las siguientes llamadas
+POST {{gateway}}/gateway/auth/login
+Content-Type: application/json
+
+{
+  "correo": "{{correo}}",
+  "clave": "{{clave}}"
+}
+
+### 3. GET tatuadores (requiere token: TatuadoresController tiene [Authorize] de clase en S14; el Gateway no bloquea esta ruta pero S14 si) -> 200
+GET {{gateway}}/gateway/tatuadores
+Authorization: Bearer PEGAR_TOKEN_DEL_PASO_2
+
+### 4. GET tatuador con id inexistente (requiere token: TatuadoresController tiene [Authorize] de clase en S14; el Gateway no bloquea esta ruta pero S14 si) -> 404
+GET {{gateway}}/gateway/tatuadores/999999
+Authorization: Bearer PEGAR_TOKEN_DEL_PASO_2
+
+### 5. POST tatuador SIN token -> 401
+POST {{gateway}}/gateway/tatuadores
+Content-Type: application/json
+
+{
+  "nombre": "Prueba Gateway",
+  "especialidad": "Realismo",
+  "aniosExperiencia": 3
+}
+
+### 6. POST tatuador CON token (rol Recepcionista, por defecto al registrarse) -> 201
+POST {{gateway}}/gateway/tatuadores
+Authorization: Bearer PEGAR_TOKEN_DEL_PASO_2
+Content-Type: application/json
+
+{
+  "nombre": "Prueba Gateway",
+  "especialidad": "Realismo",
+  "aniosExperiencia": 3
+}
+
+### 7. PUT tatuador (usar el id devuelto en el paso 6) -> 204
+PUT {{gateway}}/gateway/tatuadores/ID_DEL_PASO_6
+Authorization: Bearer PEGAR_TOKEN_DEL_PASO_2
+Content-Type: application/json
+
+{
+  "nombre": "Prueba Gateway Editado",
+  "especialidad": "Old School",
+  "aniosExperiencia": 4,
+  "activo": true
+}
+
+### 8. POST tatuador CON token de rol distinto a Recepcionista -> 403
+### Antes de correr este paso: en SSMS, UPDATE Usuarios SET Rol = 'Tatuador' WHERE Correo = '{{correo}}',
+### volver a hacer login (paso 2) para obtener un token con Rol=Tatuador, y pegarlo abajo.
+POST {{gateway}}/gateway/tatuadores
+Authorization: Bearer PEGAR_TOKEN_CON_ROL_TATUADOR
+Content-Type: application/json
+
+{
+  "nombre": "No deberia crearse",
+  "especialidad": "Realismo",
+  "aniosExperiencia": 1
+}
+
+### 9. GET clientes CON token -> 200
+GET {{gateway}}/gateway/clientes
+Authorization: Bearer PEGAR_TOKEN_DEL_PASO_2
+
+### 10. GET clientes SIN token -> 401
+GET {{gateway}}/gateway/clientes
+
+### 11. GET clientes directo al microservicio (sin pasar por el Gateway), sin token -> 401
+GET http://localhost:5260/api/clientes
+
+### 12. GET clientes por el Gateway con ClientesApi APAGADO -> 502
+### Antes de correr este paso: detener el proceso de ClientesApi y volver a llamar.
+GET {{gateway}}/gateway/clientes
+Authorization: Bearer PEGAR_TOKEN_DEL_PASO_2
