@@ -19,12 +19,15 @@ código de S14.
 1. **Microservicio 2 = Clientes** del estudio de tatuajes, datos en memoria
    (lista estática), coincide con el ejemplo de la tabla del enunciado
    (`/gateway/clientes{everything}`).
-2. **Hosting en la nube = Azure**: App Service Free F1 (un App Service Plan
-   F1 compartido por los 3 servicios en el mismo grupo de recursos) + Azure
-   SQL Database free tier (serverless, auto-pause) solo para TattooStudio.Api.
+2. **Hosting en la nube = MonsterASP.NET**, plan gratuito (confirmado por el
+   usuario: 5 websites + 5 databases incluidos). Cada servicio
+   (GatewayApi, TattooStudio.Api, ClientesApi) va como un sitio gratuito
+   independiente bajo subdominio `*.runasp.net`/`*.tryasp.net`; la base de
+   datos es una MSSQL gratuita de MonsterASP para TattooStudio.Api.
    Justificación: se mantiene el proveedor `UseSqlServer` de EF Core sin
-   cambios (no hace falta migrar a Npgsql ni adaptar el script SQL), y F1
-   permite correr varias apps bajo el mismo plan gratuito.
+   cambios (MonsterASP ofrece SQL Server real, no hace falta migrar a
+   Npgsql ni adaptar el script SQL), y el plan free ya cubre los 3 sitios +
+   1 base de datos sin pagar nada.
 3. **Un solo repositorio** `daea-lab15`, con copia completa de
    `TattooStudio.Api`, `TattooStudio.Datos`, `TattooStudio.Entidades`,
    `TattooStudio.Negocio` (copiados tal cual desde `daea-lab14`, sin tocar
@@ -65,7 +68,7 @@ además exige roles específicos (`Recepcionista`, `Tatuador`) vía
   S14 (Clave/Emisor/Audiencia desde configuración/env var), `await app.UseOcelot()`.
 - Puerto fijo en `launchSettings.json`: `5050`.
 - `ocelot.json` → `GlobalConfiguration.BaseUrl = "http://localhost:5050"` en
-  local; en la versión publicada, la URL pública del Gateway en Azure.
+  local; en la versión publicada, la URL pública del Gateway en MonsterASP.
 
 ### ClientesApi
 
@@ -117,24 +120,33 @@ en `ocelot.json`; las públicas no llevan esa sección.
   microservicios: más seguridad, más superficie de configuración que
   mantener consistente.
 
-## Despliegue en la nube (Azure)
+## Despliegue en la nube (MonsterASP.NET, plan gratuito)
 
-- 3× **Azure App Service, plan Free F1**, mismo grupo de recursos y mismo
-  App Service Plan F1 (permite varias apps bajo un plan compartido):
-  `GatewayApi`, `TattooStudio.Api`, `ClientesApi`.
-- **Azure SQL Database, free tier** (serverless, auto-pause, hasta 32 GB)
-  para TattooStudio.Api. No requiere cambiar el proveedor EF Core
-  (`UseSqlServer` se mantiene) ni adaptar el script SQL.
+- 3 sitios gratuitos independientes (uno por servicio): `GatewayApi`,
+  `TattooStudio.Api`, `ClientesApi`, cada uno con su propio subdominio
+  `*.runasp.net`/`*.tryasp.net` asignado por el panel
+  (https://admin.monsterasp.net/app/dashboard).
+- 1 base de datos **MSSQL gratuita** de MonsterASP para TattooStudio.Api.
+  No requiere cambiar el proveedor EF Core (`UseSqlServer` se mantiene) ni
+  adaptar el script SQL — se ejecuta tal cual contra la cadena de conexión
+  que da el panel.
+- Despliegue vía **Web Deploy / perfil de publicación** (Visual Studio:
+  clic derecho en cada proyecto → "Publicar" → importar el perfil `.pubxml`
+  que descarga el panel de MonsterASP para ese sitio). Un perfil de
+  publicación por servicio (3 en total), ninguno se commitea al repo si
+  trae credenciales (ver `.gitignore`).
 - `ocelot.json` en la versión publicada: `DownstreamScheme: "https"`,
-  `DownstreamHostAndPorts` con el host público de cada App Service
-  (`<nombre>.azurewebsites.net`, puerto `443`). `GlobalConfiguration.BaseUrl`
-  = URL pública del Gateway.
+  `DownstreamHostAndPorts` con el host público de cada sitio
+  (`<subdominio-asignado>.runasp.net`, puerto `443`).
+  `GlobalConfiguration.BaseUrl` = URL pública del sitio del Gateway.
 - Secretos (clave JWT, cadena de conexión) **no van al repo**: se configuran
-  como "Application settings" (variables de entorno) de cada App Service en
-  Azure, igual que localmente se usan `dotnet user-secrets` o
+  en `appsettings.Production.json` generado solo en el servidor, o como
+  variables de entorno de la aplicación si el panel de MonsterASP lo
+  permite; localmente se usan `dotnet user-secrets` o
   `appsettings.Development.json` (ya excluido por `.gitignore`).
-- El script SQL de S14 se ejecuta contra la base en la nube antes de probar
-  (en plan free el primer request puede tardar por cold start).
+- El script SQL de S14 se ejecuta contra la base en la nube (vía SSMS con
+  la cadena de conexión que da el panel) antes de probar. En plan free el
+  primer request puede tardar (cold start / recycle del pool de IIS).
 
 ## Estructura del repositorio `daea-lab15`
 
@@ -155,7 +167,8 @@ daea-lab15/
   database/                    (script SQL, copiado de daea-lab14)
   docs/
     superpowers/specs/         (este documento)
-  .gitignore                   (bin/, obj/, .vs/, *.user, *.suo, appsettings.Development.json)
+  .gitignore                   (bin/, obj/, .vs/, *.user, *.suo, appsettings.Development.json,
+                                 *.pubxml, *.pubxml.user, PublishProfiles/)
   README.md
 ```
 
@@ -192,7 +205,7 @@ archivo `.http` o colección Postman:
 Además: llamar directamente a `ClientesApi` (puerto 5260) sin pasar por el
 Gateway y sin token → debe responder `401`.
 
-Repetir la misma batería de pruebas contra las URLs públicas de Azure.
+Repetir la misma batería de pruebas contra las URLs públicas de MonsterASP.
 
 ## Fuera de alcance
 
