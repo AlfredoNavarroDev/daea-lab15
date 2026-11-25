@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="TattooStudio.Api/TattooStudio.Api.csproj" />
+  <Project Path="TattooStudio.Datos/TattooStudio.Datos.csproj" />
+  <Project Path="TattooStudio.Entidades/TattooStudio.Entidades.csproj" />
+  <Project Path="TattooStudio.Negocio/TattooStudio.Negocio.csproj" />
+</Solution>
