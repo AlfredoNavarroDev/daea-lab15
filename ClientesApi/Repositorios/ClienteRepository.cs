@@ -13,7 +13,7 @@ public class ClienteRepository : IClienteRepository
         new Cliente { Id = 5, Nombre = "Valeria Nunez", Correo = "valeria.nunez@example.com", Telefono = "987654325" },
     };
 
-    public List<Cliente> ObtenerTodos() => _clientes;
+    public List<Cliente> ObtenerTodos() => _clientes.ToList();
 
     public Cliente? ObtenerPorId(int id) => _clientes.FirstOrDefault(c => c.Id == id);
 }
