@@ -1,9 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using MMLib.SwaggerForOcelot;
-using MMLib.SwaggerForOcelot.DependencyInjection;
-using MMLib.SwaggerForOcelot.Middleware;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
@@ -37,13 +34,15 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddOcelot(builder.Configuration);
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddSwaggerForOcelot(builder.Configuration);
 
 var app = builder.Build();
 
-app.UseSwaggerForOcelotUI();
+app.UseStaticFiles();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/gateway-openapi.json", "TattooStudio Gateway v1");
+    options.RoutePrefix = "swagger";
+});
 
 await app.UseOcelot();
 

@@ -9,3 +9,5 @@ TestResults/
 **/*.pubxml
 **/*.pubxml.user
 **/PublishProfiles/
+**/*.PublishSettings
+Profiles/

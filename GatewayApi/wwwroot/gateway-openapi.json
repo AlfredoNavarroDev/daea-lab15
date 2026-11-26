@@ -1,0 +1,254 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "TattooStudio Gateway",
+    "description": "Unico punto de entrada. Cada ruta reenvia a TattooStudioApi (puerto 5225 local / tattoostudio-api.runasp.net en la nube) o a ClientesApi (puerto 5260 local / tattoostudio-clientes.runasp.net en la nube) segun ocelot.json.",
+    "version": "v1"
+  },
+  "paths": {
+    "/gateway/auth/registro": {
+      "post": {
+        "summary": "Registro de usuario (publico, sin token)",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["correo", "clave"],
+                "properties": {
+                  "correo": { "type": "string" },
+                  "clave": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Creado" },
+          "409": { "description": "El correo ya esta registrado" }
+        }
+      }
+    },
+    "/gateway/auth/login": {
+      "post": {
+        "summary": "Login (publico, sin token)",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["correo", "clave"],
+                "properties": {
+                  "correo": { "type": "string" },
+                  "clave": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK, devuelve token JWT" },
+          "401": { "description": "Credenciales invalidas" }
+        }
+      }
+    },
+    "/gateway/tatuadores": {
+      "get": {
+        "summary": "Listar tatuadores (el Gateway no exige token en esta ruta; TattooStudioApi si lo exige, por [Authorize] de clase heredado de S14)",
+        "tags": ["Tatuadores"],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": { "description": "OK" },
+          "401": { "description": "Falta token (lo exige TattooStudioApi, no el Gateway)" }
+        }
+      },
+      "post": {
+        "summary": "Crear tatuador (requiere token, rol Recepcionista)",
+        "tags": ["Tatuadores"],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": { "type": "string" },
+                  "especialidad": { "type": "string" },
+                  "aniosExperiencia": { "type": "integer" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Creado" },
+          "401": { "description": "Falta token" },
+          "403": { "description": "Token valido pero rol incorrecto" }
+        }
+      }
+    },
+    "/gateway/tatuadores/{id}": {
+      "get": {
+        "summary": "Obtener tatuador por id",
+        "tags": ["Tatuadores"],
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "404": { "description": "No existe" }
+        }
+      },
+      "put": {
+        "summary": "Editar tatuador (requiere token, rol Recepcionista)",
+        "tags": ["Tatuadores"],
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": { "type": "string" },
+                  "especialidad": { "type": "string" },
+                  "aniosExperiencia": { "type": "integer" },
+                  "activo": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": { "description": "Actualizado" },
+          "401": { "description": "Falta token" },
+          "403": { "description": "Token valido pero rol incorrecto" },
+          "404": { "description": "No existe" }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar tatuador (baja logica, rol Recepcionista)",
+        "tags": ["Tatuadores"],
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "204": { "description": "Eliminado (baja logica)" },
+          "404": { "description": "No existe" }
+        }
+      }
+    },
+    "/gateway/citastatuaje": {
+      "get": {
+        "summary": "Listar citas de tatuaje",
+        "tags": ["CitasTatuaje"],
+        "security": [{ "Bearer": [] }],
+        "responses": { "200": { "description": "OK" } }
+      },
+      "post": {
+        "summary": "Crear cita de tatuaje (rol Recepcionista)",
+        "tags": ["CitasTatuaje"],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "type": "object" } } }
+        },
+        "responses": {
+          "201": { "description": "Creada" },
+          "401": { "description": "Falta token" },
+          "403": { "description": "Rol incorrecto" }
+        }
+      }
+    },
+    "/gateway/citastatuaje/{id}": {
+      "get": {
+        "summary": "Obtener cita por id",
+        "tags": ["CitasTatuaje"],
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "404": { "description": "No existe" }
+        }
+      },
+      "put": {
+        "summary": "Editar cita (rol Recepcionista o Tatuador)",
+        "tags": ["CitasTatuaje"],
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "type": "object" } } }
+        },
+        "responses": {
+          "204": { "description": "Actualizada" },
+          "403": { "description": "Rol incorrecto" },
+          "404": { "description": "No existe" }
+        }
+      },
+      "delete": {
+        "summary": "Cancelar cita (rol Recepcionista)",
+        "tags": ["CitasTatuaje"],
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "204": { "description": "Cancelada" },
+          "403": { "description": "Rol incorrecto" },
+          "404": { "description": "No existe" }
+        }
+      }
+    },
+    "/gateway/clientes": {
+      "get": {
+        "summary": "Listar clientes (microservicio 2, en memoria)",
+        "tags": ["Clientes"],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": { "description": "OK" },
+          "401": { "description": "Falta token" }
+        }
+      }
+    },
+    "/gateway/clientes/{id}": {
+      "get": {
+        "summary": "Obtener cliente por id",
+        "tags": ["Clientes"],
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "401": { "description": "Falta token" },
+          "404": { "description": "No existe" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Autorizacion con JWT. Ejemplo: \"Bearer {token}\""
+      }
+    }
+  }
+}
