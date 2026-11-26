@@ -5,13 +5,13 @@ Laboratorio S15-E (DAEA, TECSUP). Diseño completo en
 
 ## Arquitectura
 
-Cliente -> GatewayApi (puerto 5050, valida JWT) -> TattooStudio.Api
+Cliente -> GatewayApi (puerto 5050, valida JWT) -> TattooStudioApi
 (puerto 5225, BD SQL Server, copia intacta de S14) y ClientesApi (puerto
 5260, datos en memoria).
 
 ## Proyectos
 
-- `TattooStudio.Api` / `.Datos` / `.Entidades` / `.Negocio`: API en capas
+- `TattooStudioApi` / `.Datos` / `.Entidades` / `.Negocio`: API en capas
   de S14 (tatuadores, citas de tatuaje, autenticacion), sin cambios de
   logica. Repositorio original: https://github.com/AlfredoNavarroDev/daea-lab14
 - `GatewayApi`: unico punto de entrada, Ocelot + JWT.
@@ -22,19 +22,19 @@ Cliente -> GatewayApi (puerto 5050, valida JWT) -> TattooStudio.Api
 1. Abrir `daea-lab15.slnx`.
 2. Clic derecho en la solucion -> "Configurar proyectos de inicio" ->
    "Varios proyectos de inicio".
-3. `Start` en `GatewayApi`, `TattooStudio.Api`, `ClientesApi`. `None` en
+3. `Start` en `GatewayApi`, `TattooStudioApi`, `ClientesApi`. `None` en
    el resto (son librerias o proyectos de test).
-4. F5. Puertos: Gateway `5050`, TattooStudio.Api `5225`, ClientesApi `5260`.
+4. F5. Puertos: Gateway `5050`, TattooStudioApi `5225`, ClientesApi `5260`.
 
 ## Secretos locales
 
 Antes de correr, crear a mano (no estan en el repo):
-- `TattooStudio.Api/appsettings.Development.json`
+- `TattooStudioApi/appsettings.Development.json`
 - `GatewayApi/appsettings.Development.json`
 - `ClientesApi/appsettings.Development.json`
 
 Mismo contenido `Jwt` en los 3 (ver seccion "JWT" en el spec), y la cadena
-de conexion SQL Server solo en el de `TattooStudio.Api`.
+de conexion SQL Server solo en el de `TattooStudioApi`.
 
 ## Tabla de rutas
 
@@ -48,7 +48,7 @@ de conexion SQL Server solo en el de `TattooStudio.Api`.
 | `/gateway/clientes{everything}` | GET | `:5260/api/clientes{everything}` | Si |
 
 `No` = el Gateway no exige token en esta ruta; los GET de
-tatuadores/citastatuaje igual requieren JWT porque `TattooStudio.Api` tiene
+tatuadores/citastatuaje igual requieren JWT porque `TattooStudioApi` tiene
 `[Authorize]` a nivel de clase (heredado de S14).
 
 ## Pruebas

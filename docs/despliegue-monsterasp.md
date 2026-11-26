@@ -32,7 +32,7 @@ Crear 3 sitios gratuitos (uno por servicio) y anotar el subdominio
 `*.runasp.net` que asigna cada uno:
 
 - `GatewayApi` -> anotar como GATEWAY-SUBDOMINIO
-- `TattooStudio.Api` -> anotar como TATTOOSTUDIO-API-SUBDOMINIO
+- `TattooStudioApi` -> anotar como TATTOOSTUDIO-API-SUBDOMINIO
 - `ClientesApi` -> anotar como CLIENTESAPI-SUBDOMINIO
 
 ## 3. Reemplazar los marcadores en `ocelot.Production.json`
@@ -52,7 +52,7 @@ En el panel de cada sitio, configurar las variables de entorno /
   subirse al repo — `appsettings.Production.json` ya está en
   `.gitignore`. `Jwt:Emisor` y `Jwt:Audiencia` sí pueden mantenerse
   iguales entre entornos (no son secretos).
-- `TattooStudio.Api`: cadena de conexión a la base del paso 1, y la
+- `TattooStudioApi`: cadena de conexión a la base del paso 1, y la
   sección `Jwt` (misma Clave/Emisor/Audiencia de producción en los 3
   sitios — ver punto anterior).
 - `GatewayApi`: sección `Jwt` (misma Clave/Emisor/Audiencia de producción).
@@ -60,7 +60,7 @@ En el panel de cada sitio, configurar las variables de entorno /
 
 ## 5. Publicar los 3 proyectos
 
-En Visual Studio, para cada uno de `GatewayApi`, `TattooStudio.Api`,
+En Visual Studio, para cada uno de `GatewayApi`, `TattooStudioApi`,
 `ClientesApi`: clic derecho -> Publicar -> importar el perfil `.pubxml`
 que descarga el panel de MonsterASP.NET para ese sitio -> Publicar.
 

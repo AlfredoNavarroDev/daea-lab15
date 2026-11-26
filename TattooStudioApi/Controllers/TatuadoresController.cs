@@ -4,7 +4,7 @@ using TattooStudio.Entidades.Dtos;
 using TattooStudio.Negocio.Excepciones;
 using TattooStudio.Negocio.Servicios;
 
-namespace TattooStudio.Api.Controllers;
+namespace TattooStudioApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

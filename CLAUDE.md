@@ -7,7 +7,7 @@ deben romperse.
 
 ## Qué hay en este repo
 
-- `TattooStudio.Api`, `TattooStudio.Datos`, `TattooStudio.Entidades`,
+- `TattooStudioApi`, `TattooStudio.Datos`, `TattooStudio.Entidades`,
   `TattooStudio.Negocio` — copia íntegra de S14 (repo original:
   `daea-lab14`). **Lógica de negocio congelada: no se edita.** Si hace falta
   un cambio, es señal de que el diseño está mal, no de que haya que tocar
@@ -17,7 +17,7 @@ deben romperse.
 
 ## Reglas duras
 
-- **Puertos fijos, no renegociar**: GatewayApi `5050`, TattooStudio.Api
+- **Puertos fijos, no renegociar**: GatewayApi `5050`, TattooStudioApi
   `5225`, ClientesApi `5260`.
 - **JWT**: misma `Clave`/`Emisor`/`Audiencia` en los 3 servicios. Nunca
   hardcodeada en código ni en `appsettings.json` versionado — va en
@@ -26,7 +26,7 @@ deben romperse.
 - **Nada de secretos al repo**: cadena de conexión SQL Server, clave JWT,
   perfiles `.pubxml` de publicación. Si vas a commitear algo que toque
   alguno de estos, parar y confirmar primero.
-- **ClientesApi y TattooStudio.Api no comparten clases ni base de datos**
+- **ClientesApi y TattooStudioApi no comparten clases ni base de datos**
   entre sí. Si una entidad "se parece", igual se define de nuevo en el
   proyecto que la necesita.
 - **El Gateway no valida roles.** Solo valida que el token sea válido
@@ -39,7 +39,7 @@ deben romperse.
   arriba).
 - **Hosting**: MonsterASP.NET, plan free (confirmado: 5 websites + 5
   databases). 3 sitios independientes bajo `*.runasp.net`, 1 base MSSQL
-  gratuita para TattooStudio.Api. No cambiar de proveedor sin que el
+  gratuita para TattooStudioApi. No cambiar de proveedor sin que el
   usuario lo pida — ya se evaluó Azure y se descartó a favor de este.
 - **`ocelot.json` tiene dos versiones**: local (`localhost`, http, puertos
   fijos) y publicada (host `*.runasp.net`, `DownstreamScheme: "https"`,

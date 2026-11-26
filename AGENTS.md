@@ -7,7 +7,7 @@ deben romperse, para cualquier agente de código que trabaje en este repo.
 
 ## Qué hay en este repo
 
-- `TattooStudio.Api`, `TattooStudio.Datos`, `TattooStudio.Entidades`,
+- `TattooStudioApi`, `TattooStudio.Datos`, `TattooStudio.Entidades`,
   `TattooStudio.Negocio` — copia íntegra del laboratorio S14 (repo
   original: `daea-lab14`). **Lógica de negocio congelada: no se edita.** Si
   hace falta un cambio ahí, es señal de que el diseño está mal, no de que
@@ -19,7 +19,7 @@ deben romperse, para cualquier agente de código que trabaje en este repo.
 
 ## Reglas duras
 
-- **Puertos fijos, no renegociar**: GatewayApi `5050`, TattooStudio.Api
+- **Puertos fijos, no renegociar**: GatewayApi `5050`, TattooStudioApi
   `5225`, ClientesApi `5260`.
 - **JWT**: misma `Clave`/`Emisor`/`Audiencia` en los 3 servicios. Nunca
   hardcodeada en código ni en `appsettings.json` versionado — va en
@@ -29,7 +29,7 @@ deben romperse, para cualquier agente de código que trabaje en este repo.
 - **Nada de secretos al repo**: cadena de conexión SQL Server, clave JWT,
   perfiles `.pubxml` de publicación. Si una tarea implica commitear algo
   que toque alguno de estos, detenerse y confirmar con el usuario primero.
-- **ClientesApi y TattooStudio.Api no comparten clases ni base de datos**
+- **ClientesApi y TattooStudioApi no comparten clases ni base de datos**
   entre sí. Si una entidad "se parece" entre ambos, se define de nuevo en
   el proyecto que la necesita, no se reutiliza.
 - **El Gateway no valida roles.** Solo valida que el token sea válido
@@ -41,7 +41,7 @@ deben romperse, para cualquier agente de código que trabaje en este repo.
   se toca (ver arriba).
 - **Hosting**: MonsterASP.NET, plan free (confirmado por el usuario: 5
   websites + 5 databases incluidos). 3 sitios independientes bajo
-  `*.runasp.net`, 1 base MSSQL gratuita para TattooStudio.Api. No cambiar
+  `*.runasp.net`, 1 base MSSQL gratuita para TattooStudioApi. No cambiar
   de proveedor de hosting sin que el usuario lo pida explícitamente.
 - **`ocelot.json` tiene dos versiones**: local (`localhost`, http, puertos
   fijos) y publicada (host `*.runasp.net`, `DownstreamScheme: "https"`,
