@@ -6,13 +6,13 @@ Panel: https://admin.monsterasp.net/app/dashboard
 
 1. En el panel, crear una base de datos MSSQL gratuita.
 2. Anotar el servidor, nombre de base, usuario y clave que entrega el panel.
-3. Conectar con SSMS a esa base y ejecutar `database/TattooStudio.sql`. El plan
-   free de MonsterASP.NET entrega la base ya creada con nombre asignado por el
-   panel y sin permiso de `CREATE DATABASE` ni `USE` entre bases — borrar o
-   saltar el primer bloque del script (`IF DB_ID('TattooStudio') IS NULL
-   CREATE DATABASE TattooStudio; GO` seguido de `USE TattooStudio; GO`) antes
-   de correr el resto; la base del panel ya es el destino.
-   `database/TattooStudio.sql` usa el nombre de columna `SeñaPagada` (con
+3. Conectar con SSMS a esa base y ejecutar `database/TattooStudio.monsterasp.sql`
+   (no el original `database/TattooStudio.sql`). El panel de MonsterASP.NET
+   bloquea directamente `CREATE DATABASE` — por eso existe esta variante sin
+   ese bloque ni el `USE TattooStudio` inicial; es el mismo contenido que el
+   script original de S14, solo recortado arriba, conectado directamente a la
+   base que ya te entrega el panel.
+   `database/TattooStudio.monsterasp.sql` usa el nombre de columna `SeñaPagada` (con
    `ñ`) y está guardado en UTF-8 sin BOM — abrirlo en SSMS forzando
    codificación UTF-8 (o ejecutar con `sqlcmd -f 65001`) para que esa `ñ` no
    se corrompa por un fallback a la codepage ANSI de la máquina/locale del
